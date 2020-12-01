@@ -9,7 +9,8 @@ const repoArg = myArgs.indexOf('-r');
 
 if (repoArg !== -1) repoName = myArgs[repoArg + 1];
 
-successMessage(repoName, updateMode);
+successMessage(repoName);
+console.log('\n');
 
 fs.readFile("users.txt", "utf8", function (err, data) {
   if (err) {
@@ -18,8 +19,14 @@ fs.readFile("users.txt", "utf8", function (err, data) {
 
   const users = data.split("\n").map((u) => u.replace("\r", ""));
   successMessage(`Odczytano kursantów(${users.length}): ${users.join()}`);
+  console.log('\n');
   executeCommandSync('mkdir repos', (_, error) => {
-    warnMessage(`--- \'repos\' directory found ---`)
+    if(error) warnMessage(`--- \'repos\' directory found ---`);
+
+    executeCommandSync(`mkdir ./repos/${repoName}`, (_, error) => {
+      if(error) warnMessage(`--- \'repos/${repoName}\' directory found ---`);
+    });
+
   });
 
   users.forEach((user) => {
@@ -57,14 +64,15 @@ function updateRepos(user) {
 }
 
 function cloneForUser(link, user) {
-  executeCommandSync(`mkdir ./repos/${repoName}/${user}`, (output, error) => {
+  // executeCommandSync(`mkdir ./repos/${repoName}/${user}`, (output, error) => {
 
-    if (error) warnMessage(`--- \'${user}\' directory already created ---`);
+    // if (error) warnMessage(`--- \'${user}\' directory alresady created ---`);
 
-    executeCommandSync(`git clone ${link} ./repos/${repoName}/${user}`, (_, error) => {
+    executeCommandSync(`git clone ${link} ./repos/${repoName}/${user}`, (output, error) => {
       if (error) errorMessage(`--- Error fetching \'${user}\' repository ---`);
+      if (!error) successMessage(`${user} - cloned!`);
     });
-  });
+  // });
 }
 
 function executeCommandSync(command, callback) {
