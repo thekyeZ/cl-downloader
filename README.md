@@ -25,6 +25,10 @@ cl-downloader
 ```
 
 Więc możliwe jest trzymanie wielu repozytoriów w jedym katalogu
+```sh
+$ npm i cl-downloader
+```
+lub
 
 ```sh
 $ git clone https://github.com/thekyeZ/cl-downloader
